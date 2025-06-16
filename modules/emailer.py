@@ -30,7 +30,7 @@ def send_mail(subject, body):
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = EMAIL_ADDRESS
-    msg["To"] = "someone@domain.com"
+    msg["To"] = "jcfreeman23@gmail.com"
     msg.set_content(body)
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
