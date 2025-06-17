@@ -78,5 +78,28 @@ def latest():
     else:
         return jsonify({"status": "No records found"})
 
+def init_db():
+    import sqlite3
+    conn = sqlite3.connect("eo_watch.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS executive_orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        date TEXT,
+        url TEXT
+    )
+    """)
+    cursor.execute("SELECT COUNT(*) FROM executive_orders")
+    if cursor.fetchone()[0] == 0:
+        from modules.scraper import fetch_latest
+        latest = fetch_latest()
+        cursor.execute("INSERT INTO executive_orders (title, date, url) VALUES (?, ?, ?)",
+                       (latest["title"], latest["date"], latest["url"]))
+        conn.commit()
+    conn.close()
+
 if __name__ == "__main__":
+    init_db()
+    start_scheduler(app)
     app.run(debug=True)
