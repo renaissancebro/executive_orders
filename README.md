@@ -12,11 +12,11 @@ JSON endpoints for programmatic access
 
 Modular architecture (easily extensible to other watchdogs like the Federal Register)
 
-📸 Screenshot
-(Insert screenshot of your styled dashboard here, if available)
 
 🚀 Live Demo
-Hosted at: https://your-render-url.com
+Hosted at: https://executive-orders-5luq.onrender.com
+Dashboard: https://executive-orders-5luq.onrender.com/dashboard
+
 
 
 ⚙️ Setup Instructions
