@@ -1,13 +1,37 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from modules.check import check_last_policy
 from modules.scraper import grab_meta_data
 from modules.emailer import make_email, send_mail
+from apscheduler.schedulers.background import BackgroundScheduler
+
+def start_scheduler(app):
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(lambda: check_last_policy(), trigger="interval", minutes=10)
+    scheduler.start()
+
+import os
+
+# Absolute path for database
+db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "eo_watch.db"))
+
 
 app = Flask(__name__)
 
 @app.route("/")
 def health_check():
     return "🟢 EO Watchdog is live."
+
+
+@app.route("/dashboard")
+def dashboard():
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT title, date, url FROM executive_orders")
+    alerts = cursor.fetchall()
+    conn.close()
+    return render_template("dashboard.html", alerts=alerts)
+
 
 @app.route("/run-check")
 def run_check():
@@ -22,12 +46,27 @@ def run_check():
     except Exception as e:
         return jsonify({"status": "❌ Error", "details": str(e)})
 
+
+@app.route("/dump-db")
+def dump_db():
+    import sqlite3
+    conn = sqlite3.connect("eo_watch.db")
+    conn.row_factory = sqlite3.Row  # Allows accessing columns by name
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM executive_orders ORDER BY ROWID DESC")
+    rows = cursor.fetchall()
+    conn.close()
+
+    data = [dict(row) for row in rows]
+    return jsonify(data)
+
+
 @app.route("/latest")
 def latest():
     import sqlite3
-    conn = sqlite3.connect("outputs/output/my_data.db")
+    conn = sqlite3.connect("eo_watch.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT title, date, url FROM scraped_data ORDER BY id DESC LIMIT 1")
+    cursor.execute("SELECT title, date, url FROM executive_orders ORDER BY id DESC LIMIT 1")
     result = cursor.fetchone()
     conn.close()
     if result:
