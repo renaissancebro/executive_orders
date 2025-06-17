@@ -1,24 +1,29 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>EO Watchdog Dashboard</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ccc; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>EO Watchdog Dashboard</h1>
+    <h1>📋 EO Watchdog Dashboard</h1>
     <table>
-        <tr><th>Title</th><th>Date</th><th>URL</th></tr>
-        {% for row in alerts %}
-        <tr>
-            <td>{{ row[0] }}</td>
-            <td>{{ row[1] }}</td>
-            <td><a href="{{ row[2] }}" target="_blank">View</a></td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in alerts %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td><a href="{{ row[2] }}" target="_blank">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </body>
 </html>
-
