@@ -24,7 +24,7 @@ def check_last_policy():
     print("Existing row:", row)
 
     # Only insert if it’s actually new
-    if not row or row[0] == latest["title"]:
+    if not row or row[0] != latest["title"]:
         cursor.execute("INSERT INTO executive_orders (title, date, url) VALUES (?, ?, ?)",
                        (latest["title"], latest["date"], latest["url"]))
         print("Inserted row ID:", cursor.lastrowid)
