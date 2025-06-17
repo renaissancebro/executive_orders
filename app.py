@@ -12,11 +12,11 @@ def start_scheduler(app):
 import os
 
 # Absolute path for database
-db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "eo_watch.db"))
+db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "eo_watch.db"))
 
 def init_db():
     import sqlite3
-    conn = sqlite3.connect("eo_watch.db")
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS executive_orders (
@@ -71,7 +71,7 @@ def run_check():
 @app.route("/dump-db")
 def dump_db():
     import sqlite3
-    conn = sqlite3.connect("eo_watch.db")
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row  # Allows accessing columns by name
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM executive_orders ORDER BY ROWID DESC")
@@ -85,7 +85,7 @@ def dump_db():
 @app.route("/latest")
 def latest():
     import sqlite3
-    conn = sqlite3.connect("eo_watch.db")
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT title, date, url FROM executive_orders ORDER BY id DESC LIMIT 1")
     result = cursor.fetchone()
