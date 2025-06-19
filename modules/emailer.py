@@ -8,7 +8,7 @@ load_dotenv()
 
 EMAIL_ADDRESS = os.getenv("EXECUTIVE_ORDERS_EMAIL_ADDRESS")
 EMAIL_PASSWORD = os.getenv("EXECUTIVE_ORDERS_EMAIL_PASSWORD")
-RECIPIENT = os.getenv("EXECUTIVE_ORDERS_EMAIL_RECIPIENT")
+RECIPIENTS = [email.strip() for email in os.getenv("EXECUTIVE_ORDERS_EMAIL_RECIPIENTS", "").split(",") if email.strip()]
 
 print("📧 Email:", EMAIL_ADDRESS)
 print("🔑 Password present:", EMAIL_PASSWORD is not None)
@@ -31,7 +31,7 @@ def send_mail(subject, body):
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = EMAIL_ADDRESS
-    msg["To"] = RECIPIENT
+    msg["To"] = ", ".join(RECIPIENTS)
     msg.set_content(body)
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
