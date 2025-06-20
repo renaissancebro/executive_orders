@@ -1,7 +1,6 @@
 from modules.check import check_last_policy
 from modules.scraper import grab_meta_data
 from modules.emailer import make_email, send_mail
-from fake_entry import insert_dummy
 import os
 import sys
 

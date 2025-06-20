@@ -3,8 +3,15 @@ import smtplib
 from email.message import EmailMessage
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+# Get the path to the parent directory (where your main script and .env live)
+project_root = Path(__file__).resolve().parent.parent
+env_path = project_root / ".env"
+load_dotenv(dotenv_path=env_path)
+
+print("📍 Loading .env from:", env_path)
+
 
 EMAIL_ADDRESS = os.getenv("EXECUTIVE_ORDERS_EMAIL_ADDRESS")
 EMAIL_PASSWORD = os.getenv("EXECUTIVE_ORDERS_EMAIL_PASSWORD")
